@@ -1,4 +1,4 @@
-# sdd-stats
+# stats-bot
 
 ## Project setup
 ```
