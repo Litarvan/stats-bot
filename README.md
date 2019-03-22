@@ -1,5 +1,11 @@
 # stats-bot
 
+## Linking
+
+Add the bot to the target server : https://discordapp.com/api/oauth2/authorize?client_id=558685772618661915&scope=bot
+
+Administrator then must send `stats link` in any server channel
+
 ## Project setup
 ```
 npm install

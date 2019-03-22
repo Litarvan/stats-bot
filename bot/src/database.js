@@ -44,7 +44,7 @@ export async function init () {
     const c = db.collection(name);
 
     if (!(await c.exists())) {
-      logger.debug(`  - Creation de la collection '${c.name}'`);
+      logger.debug(`  - Creating collection '${c.name}'`);
       await c.create();
     }
   }

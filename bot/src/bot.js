@@ -5,6 +5,7 @@ import logger from './logger';
 import { start as httpStart } from './http';
 import { config, load as configLoad } from './config';
 import { login as arangoLogin, init as arangoInit } from './database';
+import link from './link';
 
 const VERSION = '1.0.0';
 
@@ -13,40 +14,52 @@ const bot = new Client();
 async function start () {
   logger.info(`-- Stats bot v${VERSION} --\n`);
 
-  logger.info('--> Chargement de la configuration');
+  logger.info('--> Loading configuration...');
   configLoad();
 
-  logger.info('--> Connexion à la base de donnée...');
+  logger.info('--> Connecting to the database...');
 
   await arangoLogin();
   await arangoInit();
 
-  logger.info('--> Connecté à la base de donnée');
+  logger.info('--> Connected to the database');
 
   if (config.api.enabled) {
-    logger.info('--> Démarrage de l\'API HTTP...');
+    logger.info('--> Starting HTTP API...');
 
     const port = await httpStart();
-    logger.info(`--> API HTTP démarrée sur le port ${port}`);
+    logger.info(`--> HTTP API running on port ${port}`);
   }
 
-  logger.info('--> Connexion aux serveurs Discord...');
+  logger.info('--> Connecting to Discord servers...');
   bot.login(config.token);
 
   await awaitReady(bot);
 
   console.log();
-  logger.info(`--> Prêt ! Stats bot est opérationnel sur ${bot.guilds.size} serveur(s) Discord\n`);
+  logger.info(`--> Ready ! Stats bot is running on ${bot.guilds.size} Discord servers\n`);
 
   bot.user.setActivity(`faire des stats (v${VERSION})`);
 }
 
 bot.on('message', msg => {
+  if (msg.content.toLowerCase().trim() !== config.trigger) {
+    return;
+  }
 
+  if (!msg.member.hasPermission('ADMINISTRATOR')) {
+    msg.channel.send('🚫 Only an administrator can link the guild');
+    return;
+  }
+
+  link(msg.guild, msg.channel).catch(err => {
+    logger.error('Exception during linking !');
+    console.error(err);
+  });
 });
 
 start().catch(err => {
-  logger.error('Erreur lors du chargement du bot !');
+  logger.error('Error during bot loading !');
   logger.error(err.toString());
 
   console.error(err);

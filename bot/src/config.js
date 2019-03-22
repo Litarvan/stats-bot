@@ -2,8 +2,9 @@ import fs from 'fs';
 import logger from './logger';
 
 const defaultConfig = {
-  prefix: '!',
+  trigger: 'stats link',
   token: '',
+  url: "http://127.0.0.1:8080/",
 
   arangodb: {
     host: '127.0.0.1',
@@ -29,8 +30,8 @@ export function load() {
   if (!fs.existsSync(configFile)) {
     save();
 
-    logger.warn('La configuration par défaut a été écrite dans bot.json');
-    logger.warn('Veuillez remplir le fichier, puis relancer le bot');
+    logger.warn('Default configuration was written in bot.json');
+    logger.warn('Please fill it before starting the bot again');
 
     process.exit(0);
   }

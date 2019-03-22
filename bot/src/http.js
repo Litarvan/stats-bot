@@ -1,7 +1,7 @@
 import express from 'express';
 
 import logger from './logger';
-import config from './config';
+import { config } from './config';
 
 import corsMiddleware from './cors';
 
@@ -27,14 +27,14 @@ function awaitReady (port) {
 function e(route) {
     return (req, res) => {
         route(req, res).catch(err => {
-            logger.error("Erreur lors de l'execution d'une requête HTTP !");
+            logger.error("Error during HTTP request !");
             logger.error(err);
 
             // eslint-disable-next-line no-console
             console.error(err);
 
             res.status(500).json({
-                message: 'Erreur interne !'
+                message: 'Internal error'
             });
         })
     }
