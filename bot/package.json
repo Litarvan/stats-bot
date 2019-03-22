@@ -1,0 +1,32 @@
+{
+  "name": "stats-bot",
+  "version": "1.0.0",
+  "description": "Discord statistics bot",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Litarvan/stats-bot.git"
+  },
+  "keywords": [
+    "statistics",
+    "discord",
+    "bot"
+  ],
+  "author": "Adrien 'Litarvan' Navratil <adrien1975@live.fr>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Litarvan/stats-bot/issues"
+  },
+  "homepage": "https://github.com/Litarvan/stats-bot#readme",
+  "dependencies": {
+    "arangojs": "^6.10.0",
+    "discord.js": "^11.4.2",
+    "esm": "^3.2.20",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.1",
+    "winston": "^3.2.1"
+  }
+}
