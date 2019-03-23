@@ -2,7 +2,7 @@ import express from 'express';
 
 import logger from './logger';
 import { config } from './config';
-import { guilds, fetch } from './controller';
+import { guilds, ranking } from './controller';
 
 import corsMiddleware from './cors';
 
@@ -12,10 +12,10 @@ app.use(corsMiddleware);
 app.use(express.json());
 
 app.get('/guilds', e(guilds));
-app.get('/fetch', e(fetch));
+app.post('/ranking', e(ranking));
 
 export async function start () {
-    const port = config.api.port;
+    const { port } = config.api;
     await awaitReady(port);
 
     return port;

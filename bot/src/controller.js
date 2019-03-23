@@ -10,9 +10,48 @@ export async function guilds(req, res) {
         .map(({ id, name, iconURL }) => ({ id, name, icon: iconURL })));
 }
 
-export async function fetch(req, res) {
-    const { guild, date, channel, user } = req.body;
+export async function ranking(req, res) {
+    const { id } = req.body;
+    const guild = bot.guilds.find(g => g.id === id);
 
+    const stats = await fetch({ guild: id });
+
+    const users = {};
+
+    for (const d of Object.values(stats)) {
+        for (const c of Object.values(d)) {
+            for (const user of Object.keys(c)) {
+                if (!users[user]) {
+                    users[user] = 0;
+                }
+
+                users[user] += c[user];
+            }
+        }
+    }
+
+    const result = [];
+    for (const userID of Object.keys(users)) {
+        let user = guild.members.get(userID);
+
+        if (!user) {
+            // User left discord
+            continue;
+        }
+
+        result.push({
+            id: user.user.id,
+            name: user.displayName,
+            discriminator: user.user.discriminator,
+            avatar: user.user.displayAvatarURL.replace('size=2048', 'size=256'),
+            messages: users[userID]
+        });
+    }
+
+    res.json(result.sort((a, b) => b.messages - a.messages));
+}
+
+async function fetch({ guild, date, channel, user }) {
     let query = 'FOR g IN guilds FILTER g.id == @guild LET stats = g.stats FOR d IN ATTRIBUTES(stats) ';
     const params = { guild };
 
@@ -40,7 +79,7 @@ export async function fetch(req, res) {
     let result = await fullQuery(query, params);
     result = normalize(result, 2);
 
-    res.json(result);
+    return result;
 }
 
 function normalize(array, deep) {

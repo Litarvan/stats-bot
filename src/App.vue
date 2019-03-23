@@ -1,16 +1,146 @@
 <template>
   <div id="app">
+    <div id="guilds">
+      <div id="user">
+        <img id="user-icon" src="https://cdn.discordapp.com/avatars/87279950075293696/54c3293fdc0ef6b8c0dd9d44e9d2ccb3.png?size=128" />
+      </div>
 
-    <router-view/>
+      <div id="separator">
+      </div>
+
+      <div class="guild" v-for="guild of guilds" :key="guild.id" @click="$router.push('/guild/' + guild.id)">
+        <img class="guild-icon" :src="guild.icon" />
+      </div>
+
+      <div id="add" @click="$router.push('/add')">
+        <span id="add-text">+</span>
+      </div>
+    </div>
+    <div id="content">
+      <router-view/>
+    </div>
   </div>
 </template>
 
 <script>
+  import { mapState } from 'vuex';
+
   export default {
-    name: 'app'
+    name: 'app',
+
+    beforeMount() {
+      this.$store.dispatch('load');
+    },
+    computed: {
+      ...mapState(['guilds'])
+    }
   }
 </script>
 
-<style>
+<style lang="scss">
+  @import url('https://fonts.googleapis.com/css?family=Roboto');
 
+  $guilds-width: 70px;
+  $guild-size: 50px;
+
+  html, body {
+    margin: 0;
+    padding: 0;
+
+    overflow-x: hidden;
+  }
+
+  #app {
+    width: 100vw;
+    min-height: 100vh;
+
+    background-color: #202225;
+
+    display: flex;
+  }
+
+  #guilds {
+    width: $guilds-width;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .guild-icon, #add, #user-icon {
+      border-radius: 50%;
+
+      width: $guild-size;
+      margin-top: 10px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    #user {
+      margin-bottom: 10px;
+    }
+
+    .guild-icon {
+      transition: border-radius 250ms ease;
+
+      &:hover {
+        border-radius: 25%;
+      }
+    }
+
+    #separator {
+      background: none;
+
+      position: relative;
+      width: $guild-size;
+      height: 2px;
+
+      &::after {
+        background: #2f3136;
+        content: " ";
+
+        height: 2px;
+
+        position: absolute;
+        left: 20%;
+        right: 20%;
+        top: 0;
+      }
+    }
+
+    #add {
+      border-color: #535559;
+      color: #535559;
+
+      border-style: dashed;
+      border-width: 1px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      height: $guild-size;
+
+      transition: border-color 250ms ease, color 250ms ease;
+
+      &:hover {
+        border-color: hsla(0, 0%,100%, .75);;
+        color: hsla(0, 0%, 100%, .75);;
+      }
+    }
+  }
+
+  #content {
+    width: calc(100vw - #{$guilds-width});
+    height: 100vh;
+
+    background-color: #2f3136;
+
+    overflow: auto;
+
+    font-family: 'Roboto', 'Arial', sans-serif;
+    color: white;
+  }
 </style>

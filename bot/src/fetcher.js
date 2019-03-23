@@ -33,7 +33,7 @@ export async function fetch(guild, updater)
 
             for (const message of messages) {
                 const date = message.createdAt;
-                const key = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+                const key = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
                 if (!result[key]) {
                     result[key] = {};
