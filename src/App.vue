@@ -38,7 +38,33 @@
 </script>
 
 <style lang="scss">
-  @import url('https://fonts.googleapis.com/css?family=Roboto');
+  @font-face {
+    font-family: 'Whitney';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Whitney-Book'), url('./assets/Whitney-Book.otf');
+  }
+
+  @font-face {
+    font-family: 'Whitney';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Whitney'), local('Whitney-Medium'), url('./assets/Whitney-Medium.otf');
+  }
+
+  @font-face {
+    font-family: 'Whitney';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Whitney-Semibold'), url('./assets/Whitney-Semibold.otf');
+  }
+
+  @font-face {
+    font-family: 'Whitney';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Whitney-Bold'), url('./assets/Whitney-Bold.otf');
+  }
 
   $guilds-width: 70px;
   $guild-size: 50px;
@@ -140,7 +166,8 @@
 
     overflow: auto;
 
-    font-family: 'Roboto', 'Arial', sans-serif;
+    font-family: 'Whitney', 'Arial', sans-serif;
+    font-weight: 300;
     color: white;
   }
 </style>
