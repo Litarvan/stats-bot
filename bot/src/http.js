@@ -2,6 +2,7 @@ import express from 'express';
 
 import logger from './logger';
 import { config } from './config';
+import { guilds, fetch } from './controller';
 
 import corsMiddleware from './cors';
 
@@ -9,6 +10,9 @@ const app = express();
 
 app.use(corsMiddleware);
 app.use(express.json());
+
+app.get('/guilds', e(guilds));
+app.get('/fetch', e(fetch));
 
 export async function start () {
     const port = config.api.port;

@@ -9,7 +9,7 @@ import link from './link';
 
 const VERSION = '1.0.0';
 
-const bot = new Client();
+export const bot = new Client();
 
 async function start () {
   logger.info(`-- Stats bot v${VERSION} --\n`);
@@ -24,12 +24,10 @@ async function start () {
 
   logger.info('--> Connected to the database');
 
-  if (config.api.enabled) {
-    logger.info('--> Starting HTTP API...');
+  logger.info('--> Starting HTTP API...');
 
-    const port = await httpStart();
-    logger.info(`--> HTTP API running on port ${port}`);
-  }
+  const port = await httpStart();
+  logger.info(`--> HTTP API running on port ${port}`);
 
   logger.info('--> Connecting to Discord servers...');
   bot.login(config.token);

@@ -1,8 +1,18 @@
 import { RichEmbed } from 'discord.js';
 import { config } from './config';
 import { fetch } from './fetcher';
+import { fullQuery } from './database';
 
 export default async function(guild, channel) {
+    const guilds = await fullQuery('FOR g IN guilds FILTER g.id == @id RETURN g.id', {
+        id: guild.id
+    });
+
+    if (guilds.length > 0) {
+        await channel.send('🚫 This guild is already linked\nSee ' + config.url + 'stats/' + guild.id);
+        return;
+    }
+
     const warnEmbed = new RichEmbed()
         .setTitle("🤔 Link guild ?")
         .setDescription(
