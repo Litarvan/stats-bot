@@ -16,12 +16,19 @@
                 <Loading v-if="!loaded" />
 
                 <template v-if="loaded">
-                    <div class="user" v-for="user of ranking" :key="user.id" @click="select(user)" :class="{ 'selected': selected === user }">
-                        <img class="avatar" :src="user.avatar" />
+                    <div class="user" v-for="(user, i) of ranking" :key="user.id" @click="select(user)" :class="{ 'selected': selected === user }">
+                        <div class="user-left">
+                            <img class="avatar" :src="user.avatar" />
 
-                        <div class="user-infos">
-                            <span class="username">{{ user.name }}</span>
-                            <span class="messages"><span class="count">{{ user.messages | large }}</span> messages</span>
+                            <div class="user-infos">
+                                <span class="username">{{ user.name }}</span>
+                                <span class="messages"><span class="count">{{ user.messages | large }}</span> messages</span>
+                                <span class="joined">Joined <span class="joined-date">{{ user.joined | date }}</span></span>
+                            </div>
+                        </div>
+
+                        <div class="user-rank">
+                            #{{ i + 1 }}
                         </div>
                     </div>
                 </template>
@@ -33,7 +40,7 @@
                 <Loading v-if="!loaded" />
             </div>
         </div>
-        </div>
+    </div>
 </template>
 
 <script>
@@ -44,8 +51,7 @@
         components: { Loading },
 
         mounted() {
-            this.$store.dispatch('fetchGuild', this.$route.params['id'])
-                .then(() => this.loaded = true);
+            this.fetch();
         },
         data() {
             return {
@@ -55,20 +61,35 @@
         },
         computed: {
             guild() {
-                return this.$store.state.guilds.find(g => g.id === this.$route.params['id']);
+                return this.$store.state.guilds.find(g => g.id === this.$route.params.id);
             },
             ranking() {
-                return this.$store.state.ranking[this.$route.params['id']];
+                return this.$store.state.ranking[this.$route.params.id];
             }
         },
         filters: {
             large(number) {
                 return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            },
+            date(timestamp) {
+                const date = new Date(timestamp);
+                return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
             }
         },
         methods: {
             select(user) {
                 this.selected = user;
+            },
+            fetch() {
+                this.loaded = false;
+
+                this.$store.dispatch('fetchGuild', this.$route.params['id'])
+                    .then(() => this.loaded = true);
+            }
+        },
+        watch: {
+            '$route.params.id'(value) {
+                this.fetch();
             }
         }
     }
@@ -138,6 +159,7 @@
 
         .user {
             display: flex;
+            justify-content: space-between;
 
             margin-right: 5px;
             margin-bottom: 10px;
@@ -147,21 +169,40 @@
 
             transition: background-color 125ms ease;
 
-            .avatar {
-                width: 64px;
-                height: 64px;
-                margin-right: 15px;
+            .user-left {
+                display: flex;
 
-                border-radius: 3px;
+                .avatar {
+                    width: 64px;
+                    height: 64px;
+                    margin-right: 15px;
+
+                    border-radius: 3px;
+                }
+
+                .user-infos {
+                    display: flex;
+                    flex-direction: column;
+
+                    .count {
+                        font-weight: 500;
+                    }
+
+                    .joined {
+                        margin-top: 10px;
+                        font-size: 14px;
+                    }
+                }
             }
 
-            .user-infos {
+            .user-rank {
                 display: flex;
-                flex-direction: column;
+                align-items: center;
 
-                .count {
-                    font-weight: 500;
-                }
+                font-size: 20px;
+                font-weight: 500;
+
+                margin-top: -7px;
             }
 
             &.selected {

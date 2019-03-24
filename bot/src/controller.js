@@ -17,15 +17,29 @@ export async function ranking(req, res) {
     const stats = await fetch({ guild: id });
 
     const users = {};
+    const joined = {};
 
-    for (const d of Object.values(stats)) {
-        for (const c of Object.values(d)) {
+    for (const d of Object.keys(stats)) {
+        const split = d.split('/');
+        const date = new Date();
+
+        date.setDate(~~split[0]);
+        date.setMonth(split[1] - 1);
+        date.setFullYear(~~split[2]);
+
+        const timestamp = date.getTime();
+
+        for (const c of Object.values(stats[d])) {
             for (const user of Object.keys(c)) {
                 if (!users[user]) {
                     users[user] = 0;
                 }
 
                 users[user] += c[user];
+
+                if (!joined[user] || joined[user] > timestamp) {
+                    joined[user] = timestamp;
+                }
             }
         }
     }
@@ -44,7 +58,8 @@ export async function ranking(req, res) {
             name: user.displayName,
             discriminator: user.user.discriminator,
             avatar: user.user.displayAvatarURL.replace('size=2048', 'size=256'),
-            messages: users[userID]
+            messages: users[userID],
+            joined: joined[userID]
         });
     }
 
