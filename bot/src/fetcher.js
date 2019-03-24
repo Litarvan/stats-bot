@@ -59,7 +59,7 @@ export async function fetch(guild, updater)
         stats: result
     });
 
-    const totalTime = (new Date().getTime() - time) / 1000;
+    const totalTime = Math.round((new Date().getTime() - time) / 1000);
     const seconds = totalTime % 60;
     const minutes = (totalTime - seconds) / 60;
 

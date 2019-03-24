@@ -37,7 +37,7 @@ async function start () {
   console.log();
   logger.info(`--> Ready ! Stats bot is running on ${bot.guilds.size} Discord servers\n`);
 
-  bot.user.setActivity(`faire des stats (v${VERSION})`);
+  bot.user.setActivity(config.url);
 }
 
 bot.on('message', msg => {
