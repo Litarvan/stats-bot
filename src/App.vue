@@ -9,7 +9,7 @@
       </div>
 
       <div class="guild" v-for="guild of guilds" :key="guild.id" @click="$router.push('/guild/' + guild.id)">
-        <img class="guild-icon" :src="guild.icon" />
+        <img class="guild-icon" :src="guild.icon" :class="{ 'selected': $route.params.id === guild.id }" />
       </div>
 
       <div id="add" @click="$router.push('/add')">
@@ -106,13 +106,14 @@
 
     #user {
       margin-bottom: 10px;
+      margin-top: 5px;
     }
 
     .guild-icon {
       transition: border-radius 250ms ease;
 
-      &:hover {
-        border-radius: 25%;
+      &:hover, &.selected {
+        border-radius: 15px;
       }
     }
 

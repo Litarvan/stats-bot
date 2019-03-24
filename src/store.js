@@ -27,9 +27,7 @@ export default new Vuex.Store({
       state.guilds = guilds;
     },
     setRanking(state, { id, ranking }) {
-      console.log('Set ranking !');
       state.ranking = { ...state.ranking, [id]: ranking };
-      console.log(state.ranking[id].length);
     }
   },
   actions: {

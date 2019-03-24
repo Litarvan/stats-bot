@@ -12,6 +12,10 @@
                 </div>
             </div>
         </div>
+
+        <div id="details">
+            <h1 class="title">Details</h1>
+        </div>
     </div>
 </template>
 
@@ -46,24 +50,33 @@
 </script>
 
 <style lang="scss" scoped>
-    #ranking {
-        margin-left: 100px;
+    #guild {
+        display: flex;
+    }
 
+    .title {
+        font-weight: 500;
+        margin-left: 10px;
+        margin-top: 0;
+    }
+
+    #ranking, #details {
+        padding: 25px;
+    }
+
+    #ranking {
         display: flex;
         flex-direction: column;
 
         width: 25%;
-        height: 100vh;
+        height: calc(100vh - 50px);
         overflow: auto;
-
-        .title {
-            font-weight: 500;
-        }
 
         .user {
             display: flex;
 
-            margin-right: 15px;
+            margin-right: 5px;
+            margin-bottom: 10px;
             padding: 10px;
 
             border-radius: 4px;
@@ -91,9 +104,18 @@
             }
 
             &:hover {
-                background-color: rgba(255, 255, 255, 0.125);
+                background-color: rgba(255, 255, 255, 0.1);
                 cursor: pointer;
             }
         }
+    }
+
+    #details {
+        width: calc(75% - 20px);
+        height: calc(100vh - 50px);
+
+        background-color: #36393f;
+
+        margin-left: -20px;
     }
 </style>
