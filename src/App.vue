@@ -8,8 +8,8 @@
       <div id="separator">
       </div>
 
-      <div class="guild" v-for="guild of guilds" :key="guild.id" @click="$router.push('/guild/' + guild.id)">
-        <img class="guild-icon" :src="guild.icon" :class="{ 'selected': $route.params.id === guild.id }" />
+      <div class="guild" v-for="guild of guilds" :key="guild.id" @click="$router.push('/guild/' + guild.id)" :class="{ 'selected': $route.params.id === guild.id }">
+        <img class="guild-icon" :src="guild.icon" />
       </div>
 
       <div id="add" @click="$router.push('/add')">
@@ -93,6 +93,40 @@
     flex-direction: column;
     align-items: center;
 
+    .guild {
+      position: relative;
+      height: 50px;
+      width: 50px;
+
+      margin-bottom: 10px;
+
+      &.selected .guild-icon, .guild-icon:hover {
+        border-radius: 15px;
+      }
+
+      &::before {
+        background: #fff;
+        border-radius: 20px;
+
+        position: absolute;
+        top: 50%;
+        left: -15px;
+
+        width: 10px;
+        height: 40px;
+        margin-top: -10px;
+        margin-left: -10px;
+
+        content: " ";
+
+        transition: margin-left .35s ease;
+      }
+
+      &.selected::before {
+        margin-left: 0;
+      }
+    }
+
     .guild-icon, #add, #user-icon {
       border-radius: 50%;
 
@@ -111,10 +145,6 @@
 
     .guild-icon {
       transition: border-radius 250ms ease;
-
-      &:hover, &.selected {
-        border-radius: 15px;
-      }
     }
 
     #separator {
