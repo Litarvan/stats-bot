@@ -5,7 +5,12 @@
 
             <div id="infos-content" v-if="loaded">
                 <img class="icon" :src="guild.icon" />
-                <h1 class="title">{{ guild.name }}</h1>
+                <div id="infos-list">
+                    <h1 class="title">{{ guild.name }}</h1>
+                    <span class="info">Users    : <span class="info-value">{{ stats.memberCount | large }}</span></span>
+                    <span class="info">Messages : <span class="info-value">{{ stats.messageCount | large }}</span></span>
+                    <span class="info">Created : <span class="info-value">{{ stats.createdAt | date }}</span></span>
+                </div>
             </div>
         </div>
 
@@ -16,14 +21,14 @@
                 <Loading v-if="!loaded" />
 
                 <template v-if="loaded">
-                    <div class="user" v-for="(user, i) of ranking" :key="user.id" @click="select(user)" :class="{ 'selected': selected === user }">
+                    <div class="user" v-for="(user, i) of stats.members" :key="user.id" @click="select(user)" :class="{ 'selected': selected === user }">
                         <div class="user-left">
                             <img class="avatar" :src="user.avatar" />
 
                             <div class="user-infos">
                                 <span class="username">{{ user.name }}</span>
                                 <span class="messages"><span class="count">{{ user.messages | large }}</span> messages</span>
-                                <span class="joined">Joined <span class="joined-date">{{ user.joined | date }}</span></span>
+                                <span class="joined">Joined <span class="joined-date">{{ user.joined | dateShift }}</span></span>
                             </div>
                         </div>
 
@@ -31,6 +36,8 @@
                             #{{ i + 1 }}
                         </div>
                     </div>
+
+                    <hr style="opacity: 0" /> <!-- So that the last user is not stuck to the bottom -->
                 </template>
             </div>
 
@@ -63,17 +70,21 @@
             guild() {
                 return this.$store.state.guilds.find(g => g.id === this.$route.params.id);
             },
-            ranking() {
-                return this.$store.state.ranking[this.$route.params.id];
+            stats() {
+                return this.$store.state.stats[this.$route.params.id];
             }
         },
         filters: {
             large(number) {
                 return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
             },
-            date(timestamp) {
+            dateShift(timestamp) {
                 const date = new Date(timestamp);
                 return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+            },
+            date(timestamp) {
+                const date = new Date(timestamp);
+                return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
             }
         },
         methods: {
@@ -88,7 +99,7 @@
             }
         },
         watch: {
-            '$route.params.id'(value) {
+            '$route.params.id'() {
                 this.fetch();
             }
         }
@@ -122,11 +133,24 @@
                 margin: 10px;
             }
 
-            .title {
-                margin-left: 25px;
-                margin-top: 12px;
+            #infos-list {
+                display: flex;
+                flex-direction: column;
 
-                font-size: 36px;
+                margin-left: 25px;
+                font-size: 18px;
+
+                .title {
+                    margin-top: 12px;
+                    margin-left: 0;
+                    margin-bottom: 15px;
+
+                    font-size: 36px;
+                }
+
+                .info-value {
+                    font-weight: 500;
+                }
             }
         }
     }
@@ -203,6 +227,7 @@
                 font-weight: 500;
 
                 margin-top: -7px;
+                margin-right: 10px;
             }
 
             &.selected {
@@ -218,9 +243,8 @@
 
     #details {
         width: calc(75% - 20px);
+        margin-left: -20px;
 
         background-color: #36393f;
-
-        margin-left: -20px;
     }
 </style>

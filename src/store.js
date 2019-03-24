@@ -20,14 +20,14 @@ async function request(path, params) {
 export default new Vuex.Store({
   state: {
     guilds: [],
-    ranking: {}
+    stats: {}
   },
   mutations: {
     setGuilds(state, guilds) {
       state.guilds = guilds;
     },
-    setRanking(state, { id, ranking }) {
-      state.ranking = { ...state.ranking, [id]: ranking };
+    setStats(state, { id, stats }) {
+      state.stats = { ...state.stats, [id]: stats };
     }
   },
   actions: {
@@ -35,9 +35,9 @@ export default new Vuex.Store({
       commit('setGuilds', await request('/guilds'));
     },
     async fetchGuild({ commit }, id) {
-      commit('setRanking', {
+      commit('setStats', {
         id,
-        ranking: await request('/ranking', { id })
+        stats: await request('/stats', { id })
       });
     }
   }

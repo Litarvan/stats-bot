@@ -10,7 +10,7 @@ export async function guilds(req, res) {
         .map(({ id, name, iconURL }) => ({ id, name, icon: iconURL })));
 }
 
-export async function ranking(req, res) {
+export async function stats(req, res) {
     const { id } = req.body;
     const guild = bot.guilds.find(g => g.id === id);
 
@@ -18,6 +18,7 @@ export async function ranking(req, res) {
 
     const users = {};
     const joined = {};
+    let total = 0;
 
     for (const d of Object.keys(stats)) {
         const split = d.split('/');
@@ -35,7 +36,9 @@ export async function ranking(req, res) {
                     users[user] = 0;
                 }
 
-                users[user] += c[user];
+                const value = c[user];
+                users[user] += value;
+                total += value;
 
                 if (!joined[user] || joined[user] > timestamp) {
                     joined[user] = timestamp;
@@ -63,7 +66,12 @@ export async function ranking(req, res) {
         });
     }
 
-    res.json(result.sort((a, b) => b.messages - a.messages));
+    res.json({
+        createdAt: guild.createdTimestamp,
+        memberCount: guild.memberCount,
+        messageCount: total,
+        members: result.sort((a, b) => b.messages - a.messages)
+    });
 }
 
 async function fetch({ guild, date, channel, user }) {
