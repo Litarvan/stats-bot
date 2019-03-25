@@ -49,10 +49,14 @@ async function request(path, params) {
     method: 'POST',
     body: JSON.stringify(params),
     headers: {
-      'Token': 'Bearer ' + store.state.token,
+      'Authorization': 'Bearer ' + store.state.token,
       'Content-Type': 'application/json'
     }
-  } : {};
+  } : {
+    headers: {
+      'Authorization': 'Bearer ' + store.state.token,
+    }
+  };
 
   return await (await fetch(API_URL + path, options)).json()
 }

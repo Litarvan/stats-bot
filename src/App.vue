@@ -31,7 +31,9 @@
     name: 'app',
 
     beforeMount() {
-      this.$store.dispatch('load');
+      if (this.$store.state.user) {
+        this.$store.dispatch('load');
+      }
     },
     computed: {
       ...mapState(['guilds', 'user']),

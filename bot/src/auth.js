@@ -67,22 +67,22 @@ export async function logout(req, res) {
 }
 
 export async function validate(req, res, next) {
-    if (req.path === '/' || req.path === '/auth/login' || req.path === '/auth/callback') {
-        next();
+    if (req.method.toLowerCase() === 'options' || req.path === '/' || req.path === '/auth/login' || req.path === '/auth/callback') {
+        return next();
     }
 
-    const auth = req.headers.Authorization;
+    const auth = req.headers.authorization;
 
     if (!auth || auth.length < 8) {
-        return res.status(301).send({
+        return res.status(401).send({
             error: 'Unauthorized'
         });
     }
 
     try {
-        req.token = jwt.verify(auth.substring(7), config.jwtSecret);
+        req.token = jwt.verify(auth.substring(7), config.api.jwtSecret);
     } catch (err) {
-        return res.status(301).send({
+        return res.status(401).send({
             error: 'Unauthorized'
         });
     }

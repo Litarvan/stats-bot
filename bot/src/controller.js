@@ -3,12 +3,12 @@ import { fullQuery } from './database';
 import http from 'node-fetch';
 
 export async function guilds(req, res) {
-    const guilds = await http('http://discordapp.com/api/users/@me/guilds', {
+    const guilds = await (await http('http://discordapp.com/api/users/@me/guilds', {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${req.token.data.token}`
         }
-    });
+    })).json();
 
     const ids = await fullQuery('FOR g IN guilds FILTER POSITION(@guilds, g.id) RETURN g.id', {
         guilds: guilds.map(g => g.id)
