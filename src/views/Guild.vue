@@ -50,7 +50,7 @@
     </div>
 </template>
 
-<script>
+<script scoped>
     import Loading from '../components/Loading';
 
     export default {

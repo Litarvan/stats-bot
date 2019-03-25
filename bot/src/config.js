@@ -17,9 +17,15 @@ const defaultConfig = {
   },
 
   api: {
+    host: '127.0.0.1',
     port: 5565,
     jwtSecret: 'PLEASE_CHANGE_THIS',
     jwtExpiresIn: '7d'
+  },
+
+  discord: {
+    client: '',
+    secret: ''
   }
 };
 

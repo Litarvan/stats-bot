@@ -1,8 +1,9 @@
 <template>
   <div id="app">
     <div id="guilds">
-      <div id="user">
-        <img id="user-icon" src="https://cdn.discordapp.com/avatars/87279950075293696/54c3293fdc0ef6b8c0dd9d44e9d2ccb3.png?size=128" />
+      <div id="user" :class="{ 'unlogged': !logged }" @click="$router.push(logged ? '/user' : login())">
+        <img v-if="!logged" id="user-icon" src="./assets/discord.png" />
+        <img v-if="logged" id="user-icon" :src="user.avatar" />
       </div>
 
       <div id="separator">
@@ -24,6 +25,7 @@
 
 <script>
   import { mapState } from 'vuex';
+  import { API_URL } from "./store";
 
   export default {
     name: 'app',
@@ -32,7 +34,16 @@
       this.$store.dispatch('load');
     },
     computed: {
-      ...mapState(['guilds'])
+      ...mapState(['guilds', 'user']),
+
+      logged() {
+        return !!this.user;
+      }
+    },
+    methods: {
+      login() {
+        window.location.href = API_URL + '/auth/login?r=' + window.location.origin + '/';
+      }
     }
   }
 </script>
@@ -141,6 +152,28 @@
     #user {
       margin-bottom: 10px;
       margin-top: 5px;
+
+      #user-icon {
+        transition: border-radius 250ms ease;
+
+        &:hover {
+          border-radius: 15px;
+        }
+      }
+
+      &.unlogged #user-icon {
+        background-color: #2f3136;
+        padding: 7px;
+
+        width: 36px;
+        height: 36px;
+
+        transition: background-color 250ms ease;
+
+        &:hover {
+          background-color: #7286da;
+        }
+      }
     }
 
     .guild-icon {

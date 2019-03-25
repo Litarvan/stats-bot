@@ -1,8 +1,18 @@
 import { bot } from './bot';
 import { fullQuery } from './database';
+import http from 'node-fetch';
 
 export async function guilds(req, res) {
-    const ids = await fullQuery('FOR g IN guilds RETURN g.id');
+    const guilds = await http('http://discordapp.com/api/users/@me/guilds', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${req.token.data.token}`
+        }
+    });
+
+    const ids = await fullQuery('FOR g IN guilds FILTER POSITION(@guilds, g.id) RETURN g.id', {
+        guilds: guilds.map(g => g.id)
+    });
 
     res.json(ids
         .map(id => bot.guilds.find(g => g.id === id))

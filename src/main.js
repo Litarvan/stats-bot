@@ -5,6 +5,10 @@ import store from './store';
 
 Vue.config.productionTip = false;
 
+if (localStorage.statsToken) {
+  store.dispatch('readToken', localStorage.statsToken);
+}
+
 new Vue({
   router,
   store,
