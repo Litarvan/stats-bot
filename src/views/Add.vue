@@ -35,7 +35,12 @@
 
         flex-direction: column;
 
-        height: 100vh;
+        min-height: 100vh;
+
+        padding-top: 30px;
+        padding-bottom: 20px;
+
+        min-width: 1000px;
     }
 
     #title {
@@ -95,5 +100,11 @@
 
     #add-button:hover {
         background-color: #677bc4;
+    }
+
+    @media (max-height: 750px) {
+        #title {
+            margin-top: 0;
+        }
     }
 </style>
