@@ -22,7 +22,22 @@ const store = new Vuex.Store({
       state.guilds = guilds;
     },
     setStats(state, { id, stats }) {
-      state.stats = { ...state.stats, [id]: stats };
+      const current = state.stats;
+      if (!current[id]) {
+        current[id] = {
+          stats: {},
+          users: {}
+        };
+      }
+
+      current[id].stats = stats;
+      state.stats = current;
+    },
+    setUserStats(state, { guild, id, stats }) {
+      const users = state.stats[guild].users;
+      users[id] = stats;
+
+      state.stats[guild].users = users;
     }
   },
   actions: {
@@ -32,7 +47,14 @@ const store = new Vuex.Store({
     async fetchGuild({ commit }, id) {
       commit('setStats', {
         id,
-        stats: await request('/stats', { id })
+        stats: await request('/stats/guild', { id })
+      });
+    },
+    async fetchUser({ commit }, { guild, id }) {
+      commit('setUserStats', {
+        guild,
+        id,
+        stats: await request('/stats/user', { guild, id })
       });
     },
     async readToken({ commit }, token) {

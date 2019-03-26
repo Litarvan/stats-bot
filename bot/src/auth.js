@@ -33,7 +33,7 @@ export async function callback(req, res) {
         return;
     }
 
-    const accessToken = json.access_token
+    const accessToken = json.access_token;
 
     response = await fetch('http://discordapp.com/api/users/@me', {
         method: 'POST',

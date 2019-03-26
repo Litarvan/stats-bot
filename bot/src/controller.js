@@ -20,7 +20,7 @@ export async function guilds(req, res) {
         .map(({ id, name, iconURL }) => ({ id, name, icon: iconURL })));
 }
 
-export async function stats(req, res) {
+export async function guildStats(req, res) {
     const { id } = req.body;
     const guild = bot.guilds.find(g => g.id === id);
 
@@ -82,6 +82,38 @@ export async function stats(req, res) {
         messageCount: total,
         members: result.sort((a, b) => b.messages - a.messages)
     });
+}
+
+export async function userStats(req, res) {
+    const { guild, id } = req.body;
+    const stats = await fetch({ guild, user: id });
+
+    const result = {};
+
+    for (const d of Object.keys(stats)) {
+        const split = d.split('/');
+        const date = new Date();
+
+        date.setDate(~~split[0]);
+        date.setMonth(split[1] - 1);
+        date.setFullYear(~~split[2]);
+
+        const timestamp = date.getTime();
+        result[timestamp] = 0;
+
+        for (const c of Object.values(stats[d])) {
+            result[timestamp] += c[id];
+        }
+    }
+
+    const keys = Object.keys(result).sort((a, b) => b - a);
+    const sorted = {};
+
+    for (const key of keys) {
+        sorted[key] = result[key];
+    }
+
+    res.json(sorted);
 }
 
 async function fetch({ guild, date, channel, user }) {

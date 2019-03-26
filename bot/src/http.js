@@ -2,7 +2,7 @@ import express from 'express';
 
 import logger from './logger';
 import { config } from './config';
-import { guilds, stats } from './controller';
+import { guilds, guildStats, userStats } from './controller';
 import corsMiddleware from './cors';
 import { login, callback, validate as authMiddleware, logout } from './auth';
 
@@ -13,7 +13,8 @@ app.use(authMiddleware);
 app.use(express.json());
 
 app.get('/guilds', e(guilds));
-app.post('/stats', e(stats));
+app.post('/stats/guild', e(guildStats));
+app.post('/stats/user', e(userStats));
 app.get('/auth/login', e(login))
 app.get('/auth/callback', e(callback));
 app.post('/auth/logout', e(logout));

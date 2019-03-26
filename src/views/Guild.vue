@@ -43,15 +43,25 @@
 
             <div id="details">
                 <h1 class="title">Details</h1>
-
                 <Loading v-if="!loaded" />
+
+                <template v-if="selected">
+                    <Loading v-if="!detailsLoaded" />
+
+                    <div id="canvas-container" :class="{ 'hidden': !detailsLoaded }">
+                        <canvas ref="msgPerDay"></canvas>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import Chart from 'chart.js';
     import Loading from '../components/Loading';
+
+    let chart;
 
     export default {
         name: 'guild',
@@ -63,6 +73,7 @@
         data() {
             return {
                 loaded: false,
+                detailsLoaded: false,
                 selected: null
             }
         },
@@ -71,7 +82,7 @@
                 return this.$store.state.guilds.find(g => g.id === this.$route.params.id);
             },
             stats() {
-                return this.$store.state.stats[this.$route.params.id];
+                return this.$store.state.stats[this.$route.params.id].stats;
             }
         },
         filters: {
@@ -90,9 +101,60 @@
         methods: {
             select(user) {
                 this.selected = user;
+                this.detailsLoaded = false;
+
+                const guild = this.$route.params.id;
+
+                this.$store.dispatch('fetchUser', {
+                    guild,
+                    id: user.id
+                }).then(() => {
+                    const data = this.$store.state.stats[guild].users[user.id];
+                    const labels = Object.keys(data).filter((_, i) => i < 60).map(time => {
+                        const date = new Date(parseInt(time));
+                        const pad = a => ((a < 10 ? '0' : '') + a);
+                        return pad(date.getDate()) + '/' + pad((date.getMonth() + 1)) + '/' + date.getFullYear().toString().substring(2);
+                    });
+
+                    if (chart) {
+                        chart.data.labels = labels;
+                        chart.data.datasets[0].data = Object.values(data).filter((_, i) => i < 60);
+                        chart.update();
+
+                        this.detailsLoaded = true;
+                        return;
+                    }
+
+                    chart = new Chart(this.$refs.msgPerDay.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels,
+                            datasets: [
+                                {
+                                    label: 'Messages par jour',
+                                    backgroundColor: 'rgba(56, 226, 82, 0.75)',
+                                    data: Object.values(data).filter((_, i) => i < 60)
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+
+                    this.detailsLoaded = true;
+                });
             },
             fetch() {
                 this.loaded = false;
+                this.detailsLoaded = false;
+                this.selected = null;
 
                 this.$store.dispatch('fetchGuild', this.$route.params['id'])
                     .then(() => this.loaded = true);
@@ -254,5 +316,21 @@
         margin-left: -20px;
 
         background-color: #36393f;
+
+        #canvas-container {
+            width: 500px;
+
+            padding: 20px;
+            padding-bottom: 10px;
+
+            margin-left: 10px;
+
+            background-color: #2b2c31;
+            box-shadow: rgba(0, 0, 0, 0.3) 0 1px 4px 0;
+
+            &.hidden {
+                display: none !important;
+            }
+        }
     }
 </style>
