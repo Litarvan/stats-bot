@@ -50,7 +50,7 @@
     </div>
 </template>
 
-<script scoped>
+<script>
     import Loading from '../components/Loading';
 
     export default {
@@ -178,14 +178,14 @@
         display: flex;
         flex-direction: column;
 
-        width: 25%;
+        width: 575px;
         overflow: auto;
 
         .user {
             display: flex;
             justify-content: space-between;
 
-            margin-right: 5px;
+            margin-right: 10px;
             margin-bottom: 10px;
             padding: 10px;
 
@@ -207,6 +207,14 @@
                 .user-infos {
                     display: flex;
                     flex-direction: column;
+
+                    .username {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+
+                        width: 200px;
+                    }
 
                     .count {
                         font-weight: 500;
@@ -242,7 +250,7 @@
     }
 
     #details {
-        width: calc(75% - 20px);
+        width: 100%;
         margin-left: -20px;
 
         background-color: #36393f;
