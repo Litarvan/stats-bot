@@ -1,33 +1,34 @@
 import fetch from 'node-fetch';
-import btoa from 'btoa';
 import jwt from 'jsonwebtoken';
 
 import { config } from './config';
 
 function redirectURL(red) {
     const { host, port } = config.api;
-    return encodeURIComponent(`http://${host}` + (host === '127.0.0.1' ? `:${port}` : '') + '/auth/callback?r=' + red);
+    return `http://${host}` + (host === '127.0.0.1' ? `:${port}` : '') + '/auth/callback?r=' + red;
 }
 
 export async function login(req, res) {
-    res.redirect(`https://discordapp.com/oauth2/authorize?client_id=${config.discord.client}&scope=guilds%20identify&response_type=code&redirect_uri=${redirectURL(req.query.r)}`);
+    res.redirect(`https://discord.com/oauth2/authorize?client_id=${config.discord.client}&scope=identify%20guilds&response_type=code&redirect_uri=${redirectURL(req.query.r)}`);
 }
 
 export async function callback(req, res) {
     if (!req.query.code) throw new Error('No code provided');
 
-    const code = req.query.code;
-    const creds = btoa(`${config.discord.client}:${config.discord.secret}`);
-    let response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirectURL(req.query.r)}`,
-        {
-            method: 'POST',
-            headers: {
-                Authorization: `Basic ${creds}`,
-            },
-        });
+    const params = new URLSearchParams();
+    params.append('client_id', config.discord.client);
+    params.append('client_secret', config.discord.secret);
+    params.append('grant_type', 'authorization_code');
+    params.append('code', req.query.code);
+    params.append('redirect_uri', redirectURL(req.query.r));
+    params.append('scope', 'identify guilds');
+
+    let response = await fetch('https://discord.com/api/v6/oauth2/token', {
+        method: 'POST',
+        body: params
+    });
 
     let json = await response.json();
-
     if (!json.access_token) {
         res.status(403).send('Failed auth');
         return;

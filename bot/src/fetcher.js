@@ -10,7 +10,8 @@ export async function fetch(guild, updater)
     const result = {};
     let messageCount = 0;
 
-    const channels = guild.channels.array().filter(channel => channel.type === 'text');
+    // :) chien
+    const channels = guild.channels.array().filter(channel => channel.type === 'text' && channel.name !== 'spam_student_only');
     for (let i = 0; i < channels.length; i++) {
         const channel = channels[i];
 

@@ -28,7 +28,7 @@
                             <div class="user-infos">
                                 <span class="username">{{ user.name }}</span>
                                 <span class="messages"><span class="count">{{ user.messages | large }}</span> messages</span>
-                                <span class="joined">Joined <span class="joined-date">{{ user.joined | dateShift }}</span></span>
+                                <span class="joined">Joined <span class="joined-date">{{ user.joined | date }}</span></span>
                             </div>
                         </div>
 
@@ -89,13 +89,11 @@
             large(number) {
                 return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
             },
-            dateShift(timestamp) {
-                const date = new Date(timestamp);
-                return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-            },
             date(timestamp) {
                 const date = new Date(timestamp);
-                return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+                const pad = s => s < 10 ? '0' + s : s;
+
+                return pad(date.getDate()) + '/' + pad(date.getMonth() + 1) + '/' + date.getFullYear();
             }
         },
         methods: {
@@ -131,7 +129,7 @@
                             labels,
                             datasets: [
                                 {
-                                    label: 'Messages par jour',
+                                    label: 'Messages per day',
                                     backgroundColor: 'rgba(56, 226, 82, 0.75)',
                                     data: Object.values(data).filter((_, i) => i < 60)
                                 }
