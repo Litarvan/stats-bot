@@ -25,7 +25,7 @@
     "arangojs": "^6.10.0",
     "discord.js": "^11.4.2",
     "esm": "^3.2.20",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "winston": "^3.2.1"
   }
